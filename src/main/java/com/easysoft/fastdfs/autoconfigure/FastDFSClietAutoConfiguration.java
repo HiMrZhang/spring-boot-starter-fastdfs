@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(FastDFSProperties.class)
 public class FastDFSClietAutoConfiguration {
     @Bean
+    @ConditionalOnMissingBean(FastDFSClient.class)
     public IFastDFSClient fastDFSClient(FastDFSProperties fastDFSProperties) {
         return new FastDFSClient(fastDFSProperties);
     }

@@ -85,13 +85,15 @@ public class FastDFSClient implements IFastDFSClient {
         }
         log.info("upload_file time used:" + (System.currentTimeMillis() - startTime) + " ms");
 
-        if (uploadResults == null && storageClient != null) {
-            log.error("upload file fail, error code:" + storageClient.getErrorCode());
+        if (uploadResults == null) {
+            if (storageClient != null) {
+                log.error("upload file fail, error code:" + storageClient.getErrorCode());
+            }
+        } else {
+            String groupName = uploadResults[0];
+            String remoteFileName = uploadResults[1];
+            log.info("upload file successfully!!!" + "group_name:" + groupName + ", remoteFileName:" + " " + remoteFileName);
         }
-        String groupName = uploadResults[0];
-        String remoteFileName = uploadResults[1];
-
-        log.info("upload file successfully!!!" + "group_name:" + groupName + ", remoteFileName:" + " " + remoteFileName);
         return uploadResults;
     }
 
@@ -154,13 +156,11 @@ public class FastDFSClient implements IFastDFSClient {
 
     private StorageClient getTrackerClient() throws IOException {
         TrackerServer trackerServer = getTrackerServer();
-        StorageClient storageClient = new StorageClient(trackerServer, null);
-        return storageClient;
+        return new StorageClient(trackerServer, null);
     }
 
     private TrackerServer getTrackerServer() throws IOException {
         TrackerClient trackerClient = new TrackerClient();
-        TrackerServer trackerServer = trackerClient.getConnection();
-        return trackerServer;
+        return trackerClient.getConnection();
     }
 }
