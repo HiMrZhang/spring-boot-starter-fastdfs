@@ -22,4 +22,4 @@ spring:
     antiStealToken: false
     secretKey: test1234
     trackerServers:
-      - 47.97.16.185:22122
+      - 172.16.155.103:22122

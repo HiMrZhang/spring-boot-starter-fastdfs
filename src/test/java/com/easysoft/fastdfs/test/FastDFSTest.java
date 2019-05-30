@@ -38,7 +38,7 @@ public class FastDFSTest {
             }
             FastDFSFile fastDFSFile = new FastDFSFile(fileName, fileBuff, ext);
             String[] fileAbsolutePath = fastDFSClient.upload(fastDFSFile);
-            String path = fastDFSClient.getTrackerUrl() + fileAbsolutePath[0] + "/" + fileAbsolutePath[1];
+            String path = fileAbsolutePath[0] + "/" + fileAbsolutePath[1];
             log.info(path);
         } catch (IOException e) {
             e.printStackTrace();

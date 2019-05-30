@@ -76,7 +76,7 @@ public class FastDFSClient implements IFastDFSClient {
         String[] uploadResults = null;
         StorageClient storageClient = null;
         try {
-            storageClient = getTrackerClient();
+            storageClient = getStorageClient();
             uploadResults = storageClient.upload_file(file.getContent(), file.getExt(), metaList);
         } catch (IOException e) {
             log.error("IO Exception when uploadind the file:" + file.getName(), e);
@@ -100,7 +100,7 @@ public class FastDFSClient implements IFastDFSClient {
     @Override
     public FileInfo getFile(String groupName, String remoteFileName) {
         try {
-            StorageClient storageClient = getTrackerClient();
+            StorageClient storageClient = getStorageClient();
             return storageClient.get_file_info(groupName, remoteFileName);
         } catch (IOException e) {
             log.error("IO Exception: Get File from Fast DFS failed", e);
@@ -113,7 +113,7 @@ public class FastDFSClient implements IFastDFSClient {
     @Override
     public InputStream downFile(String groupName, String remoteFileName) {
         try {
-            StorageClient storageClient = getTrackerClient();
+            StorageClient storageClient = getStorageClient();
             byte[] fileByte = storageClient.download_file(groupName, remoteFileName);
             InputStream ins = new ByteArrayInputStream(fileByte);
             return ins;
@@ -128,7 +128,7 @@ public class FastDFSClient implements IFastDFSClient {
     @Override
     public void deleteFile(String groupName, String remoteFileName)
             throws Exception {
-        StorageClient storageClient = getTrackerClient();
+        StorageClient storageClient = getStorageClient();
         int i = storageClient.delete_file(groupName, remoteFileName);
         log.info("delete file successfully!!!" + i);
     }
@@ -137,30 +137,18 @@ public class FastDFSClient implements IFastDFSClient {
     public StorageServer[] getStoreStorages(String groupName)
             throws IOException {
         TrackerClient trackerClient = new TrackerClient();
-        TrackerServer trackerServer = trackerClient.getConnection();
-        return trackerClient.getStoreStorages(trackerServer, groupName);
+        return trackerClient.getStoreStorages(null, groupName);
     }
 
     @Override
     public ServerInfo[] getFetchStorages(String groupName,
                                          String remoteFileName) throws IOException {
         TrackerClient trackerClient = new TrackerClient();
-        TrackerServer trackerServer = trackerClient.getConnection();
-        return trackerClient.getFetchStorages(trackerServer, groupName, remoteFileName);
+        return trackerClient.getFetchStorages(null, groupName, remoteFileName);
     }
 
-    @Override
-    public String getTrackerUrl() throws IOException {
-        return "http://" + getTrackerServer().getInetSocketAddress().getHostString() + ":" + ClientGlobal.getG_tracker_http_port() + "/";
+    private StorageClient getStorageClient() throws IOException {
+        return new StorageClient();
     }
 
-    private StorageClient getTrackerClient() throws IOException {
-        TrackerServer trackerServer = getTrackerServer();
-        return new StorageClient(trackerServer, null);
-    }
-
-    private TrackerServer getTrackerServer() throws IOException {
-        TrackerClient trackerClient = new TrackerClient();
-        return trackerClient.getConnection();
-    }
 }

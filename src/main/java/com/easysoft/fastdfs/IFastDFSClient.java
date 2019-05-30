@@ -27,6 +27,4 @@ public interface IFastDFSClient {
 
     ServerInfo[] getFetchStorages(String groupName, String remoteFileName) throws IOException;
 
-    String getTrackerUrl() throws IOException;
-
 }
